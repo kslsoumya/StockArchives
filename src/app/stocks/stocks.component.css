@@ -1,0 +1,21 @@
+
+
+.cursorPointer {
+    cursor: pointer;
+    color: brown;
+}
+.search {
+    display: inline-flex;
+}
+.my-pagination {
+
+    text-align: center
+}
+
+td {
+    cursor: pointer;
+}
+
+.table thead th {
+    color : #137c2b
+}

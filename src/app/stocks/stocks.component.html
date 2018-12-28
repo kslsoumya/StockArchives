@@ -1,0 +1,82 @@
+<ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-scale-multiple">
+  <p style="font-size: 20px; color: white">Loading...</p>
+</ngx-spinner>
+
+<div class="container">
+  <div class="row mt-1">
+    <div class="col-md-5 mx-auto search ">
+      <select class="form-control" [(ngModel)]='selectedSymbol' (ngModelChange)='filterSymbol()'>
+        <option selected>Filter By Symbol</option>
+        <option  *ngFor = "let symbol of symbolsList | orderBy : symbol">
+          {{symbol}}
+        </option>
+      </select> &nbsp;&nbsp;<button class ="btn btn-outline-secondary" (click) ='clearSelection()'>Clear</button>
+      
+    </div>
+    
+  </div>
+  <small class="text-muted">*Click on the info to see the details.</small>
+  <br/>
+  <br />
+  <div class="table-responsive">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">S.No</th>
+          <th *ngFor='let col of columns' (click)="setOrder(col.title)">{{col.title}}
+            <span class="cursorPointer" [hidden]=col.reverse>▼</span>
+            <span class="cursorPointer" [hidden]=!col.reverse>▲</span>
+          </th>
+          <th scope="col">Info</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let stock of stocksList|paginate: { itemsPerPage:50, currentPage: p, totalItems: stocksCount }|orderBy: order:reverse:'case-insensitive';index as i;">
+          <th scope="row">{{i+1+(p-1)*50}}</th>
+          <td>{{stock.symbol}}</td>
+          <td>{{stock.low}}</td>
+          <td>{{stock.high}}</td>
+          <td>{{stock.open}}</td>
+          <td>{{stock.close}}</td>
+          <td><i class="fa fa-info-circle" style="color:rgb(11, 11, 191)" aria-hidden="true" (click)="modalClick(stock)"
+              data-toggle="modal" data-target="#infoModal"></i></td>
+
+          <div class="modal fade" *ngIf="stockDetail!==undefined" id="infoModal" tabindex="-1" role="dialog"
+            aria-labelledby="infoModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="infoModalLabel">Symbol : {{stockDetail.symbol}}</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <li class="list-group-item list-group-item-danger"><strong>Low:</strong> {{stockDetail.low}}</li>
+                  <li class="list-group-item list-group-item-success"><strong>High:</strong> {{stockDetail.high}} </li>
+                  <li class="list-group-item list-group-item-primary"><strong>Volume :</strong>&nbsp;
+                    <span class="badge badge-light">{{stockDetail.volume}}</span>
+                  </li>
+                  <li class="list-group-item list-group-item-info"><strong>Open:</strong> {{stockDetail.open}}</li>
+                  <li class="list-group-item list-group-item-secondary"><strong>Close:</strong> {{stockDetail.close}}
+                  </li>
+                  <li class="list-group-item list-group-item-warning"><strong>Date :</strong>&nbsp;
+                    <span class="badge badge-light">{{stockDetail.date}}</span>
+                  </li>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+
+<pagination-controls class="my-pagination" (pageChange)="changePage($event);p=$event"></pagination-controls>
